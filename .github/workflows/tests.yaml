@@ -85,7 +85,7 @@ jobs:
         # we set the smash root directory
         export SMASH_ROOT=$PWD
         # we download and unpack clang to have clang-format available
-        curl -# -o clang6_0_0.tar.xz https://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz; &&
+        curl -# -o clang6_0_0.tar.xz https://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz &&
         mkdir clang6_0_0 && tar -xf clang6_0_0.tar.xz -C clang6_0_0 --strip-components=1 && rm clang6_0_0.tar.xz
         # we install cmake-format in a dedicated directory and adjust environment
         mkdir $SMASH_ROOT/python-tools && pip install --target $SMASH_ROOT/python-tools cmakelang==0.6.13
@@ -96,4 +96,3 @@ jobs:
         echo "Python version: $(python --version)"
         echo "Pip    version: $(pip --version)"
         PATH=$SMASH_ROOT/clang6_0_0/bin/:$PATH clang-format --version
-        
