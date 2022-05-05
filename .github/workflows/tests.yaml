@@ -72,13 +72,15 @@ jobs:
         cmake --version
         # we set the smash root directory
         export SMASH_ROOT=$PWD
-        # we install cmake-format in a dedicated directory and adjust environment
-        mkdir $SMASH_ROOT/python-tools && pip install --target $SMASH_ROOT/python-tools cmakelang==0.6.13
-        export PYTHONPATH=$SMASH_ROOT/python-tools:$PYTHONPATH
-        echo "cmake-format --version"
-        PATH=$SMASH_ROOT/python-tools/bin/:$PATH cmake-format --version
-        echo "Python version: $(python --version)"
-        echo "Pip    version: $(pip --version)"
+        if [[ $SITE == "linux-default-gcc" ]]; then
+            # we install cmake-format in a dedicated directory and adjust environment
+            mkdir $SMASH_ROOT/python-tools && pip install --target $SMASH_ROOT/python-tools cmakelang==0.6.13
+            export PYTHONPATH=$SMASH_ROOT/python-tools:$PYTHONPATH
+            echo "cmake-format --version"
+            PATH=$SMASH_ROOT/python-tools/bin/:$PATH cmake-format --version
+            echo "Python version: $(python --version)"
+            echo "Pip    version: $(pip --version)"
+        fi
         # we get cpplint
         wget https://raw.githubusercontent.com/cpplint/cpplint/develop/cpplint.py && chmod +x cpplint.py && mkdir -p $HOME/bin && mv cpplint.py $HOME/bin
         export PATH=$HOME/bin:$PATH
