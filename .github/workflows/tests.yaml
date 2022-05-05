@@ -73,12 +73,13 @@ jobs:
         export PATH=$HOME/bin:$PATH
         cpplint.py --version
     # Separate step for formatting
-    - name: code_format_check
-      if: matrix.site == 'linux-default-gcc'
+    - if: matrix.site == 'linux-default-gcc'
       uses: actions/setup-python@v3
       with:
           python-version: '3.9' # Version range or exact version of a Python version to use, using SemVer's version range syntax
           architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+    - name: code_format_check
+      if: matrix.site == 'linux-default-gcc'
       run: |
         # we set the smash root directory
         export SMASH_ROOT=$PWD
