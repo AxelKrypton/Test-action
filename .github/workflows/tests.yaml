@@ -72,21 +72,28 @@ jobs:
         wget https://raw.githubusercontent.com/cpplint/cpplint/develop/cpplint.py && chmod +x cpplint.py && mkdir -p $HOME/bin && mv cpplint.py $HOME/bin
         export PATH=$HOME/bin:$PATH
         cpplint.py --version
-    # Separate step for formatting
+    # We now setup python environment to then install cmake-format, but we do so on one site only
+    # since we are going to test only there whether the codebase is correctly formatted or not
     - if: matrix.site == 'linux-default-gcc'
+      # this is an other GitHub action to properly setup the python environment
       uses: actions/setup-python@v3
       with:
-          python-version: '3.9' # Version range or exact version of a Python version to use, using SemVer's version range syntax
-          architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+        python-version: '3.9'
     - name: code_format_check
       if: matrix.site == 'linux-default-gcc'
       run: |
         # we set the smash root directory
         export SMASH_ROOT=$PWD
+        # we download and unpack clang to have clang-format available
+        curl -# -o clang6_0_0.tar.xz https://releases.llvm.org/6.0.0/clang+llvm-6.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz; &&
+        mkdir clang6_0_0 && tar -xf clang6_0_0.tar.xz -C clang6_0_0 --strip-components=1 && rm clang6_0_0.tar.xz
         # we install cmake-format in a dedicated directory and adjust environment
         mkdir $SMASH_ROOT/python-tools && pip install --target $SMASH_ROOT/python-tools cmakelang==0.6.13
         export PYTHONPATH=$SMASH_ROOT/python-tools:$PYTHONPATH
-        echo "cmake-format --version"
+        # we check the correct formatting of the code
+        printf "cmake-format --version: "
         PATH=$SMASH_ROOT/python-tools/bin/:$PATH cmake-format --version
         echo "Python version: $(python --version)"
         echo "Pip    version: $(pip --version)"
+        PATH=$SMASH_ROOT/clang6_0_0/bin/:$PATH clang-format --version
+        
