@@ -54,6 +54,10 @@ jobs:
     steps:
     # this is an action provided by GitHub to checkout the repository
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v3
+      with:
+          python-version: '3.9' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
     # we set the name of the step, collecting all the tests in just one step
     - name: code_check
     # we set some environment variables for the specific OS version
