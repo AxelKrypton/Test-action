@@ -82,4 +82,4 @@ jobs:
         # we get cpplint
         wget https://raw.githubusercontent.com/cpplint/cpplint/develop/cpplint.py && chmod +x cpplint.py && mkdir -p $HOME/bin && mv cpplint.py $HOME/bin
         export PATH=$HOME/bin:$PATH
-        cpplint --version
+        cpplint.py --version
