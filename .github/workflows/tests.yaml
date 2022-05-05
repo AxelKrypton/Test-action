@@ -54,10 +54,6 @@ jobs:
     steps:
     # this is an action provided by GitHub to checkout the repository
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@v3
-      with:
-          python-version: '3.9' # Version range or exact version of a Python version to use, using SemVer's version range syntax
-          architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
     # we set the name of the step, collecting all the tests in just one step
     - name: code_check
     # we set some environment variables for the specific OS version
@@ -72,16 +68,24 @@ jobs:
         cmake --version
         # we set the smash root directory
         export SMASH_ROOT=$PWD
-        if [[ $SITE == "linux-default-gcc" ]]; then
-            # we install cmake-format in a dedicated directory and adjust environment
-            mkdir $SMASH_ROOT/python-tools && pip install --target $SMASH_ROOT/python-tools cmakelang==0.6.13
-            export PYTHONPATH=$SMASH_ROOT/python-tools:$PYTHONPATH
-            echo "cmake-format --version"
-            PATH=$SMASH_ROOT/python-tools/bin/:$PATH cmake-format --version
-            echo "Python version: $(python --version)"
-            echo "Pip    version: $(pip --version)"
-        fi
         # we get cpplint
         wget https://raw.githubusercontent.com/cpplint/cpplint/develop/cpplint.py && chmod +x cpplint.py && mkdir -p $HOME/bin && mv cpplint.py $HOME/bin
         export PATH=$HOME/bin:$PATH
         cpplint.py --version
+    # Separate step for formatting
+    - name: code_format_check
+      if: matrix.site == 'linux-default-gcc'
+      uses: actions/setup-python@v3
+      with:
+          python-version: '3.9' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+      run: |
+        # we set the smash root directory
+        export SMASH_ROOT=$PWD
+        # we install cmake-format in a dedicated directory and adjust environment
+        mkdir $SMASH_ROOT/python-tools && pip install --target $SMASH_ROOT/python-tools cmakelang==0.6.13
+        export PYTHONPATH=$SMASH_ROOT/python-tools:$PYTHONPATH
+        echo "cmake-format --version"
+        PATH=$SMASH_ROOT/python-tools/bin/:$PATH cmake-format --version
+        echo "Python version: $(python --version)"
+        echo "Pip    version: $(pip --version)"
