@@ -3,10 +3,10 @@ on:
   # but only for the main branch
   push:
     branches:
-      - main
+      - not_existent
   pull_request:
     branches:
-      - main
+      - not_existent
 
 jobs:
   check_pull:
